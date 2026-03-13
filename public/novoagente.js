@@ -118,7 +118,7 @@ function populateReview() {
 }
 
 const CONFIG = {
-  API_URL: "https://SEU-DOMINIO.vercel.app/api/novo-agente",
+  API_URL: "/api/novo-agente",
   EMAILJS_PUBLIC_KEY: "SUA_PUBLIC_KEY",
   EMAILJS_SERVICE_ID: "SUA_SERVICE_ID",
   EMAILJS_TEMPLATE_ID: "SUA_TEMPLATE_ID",
