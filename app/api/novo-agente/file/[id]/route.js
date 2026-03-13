@@ -33,7 +33,7 @@ function sanitizeFileName(name) {
 
 export async function GET(request, { params }) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const searchParams = request.nextUrl.searchParams;
     const exp = searchParams.get('exp') || '';
     const sig = searchParams.get('sig') || '';
@@ -63,14 +63,18 @@ export async function GET(request, { params }) {
       return Response.json({ success: false, error: 'Arquivo nao encontrado' }, { status: 404 });
     }
 
+    const rawData = Buffer.isBuffer(file.data)
+      ? file.data
+      : Buffer.from(file.data.buffer);
+
     const filename = sanitizeFileName(file.filename);
     const contentType = file.contentType || 'application/octet-stream';
 
-    return new Response(file.data.buffer, {
+    return new Response(rawData, {
       status: 200,
       headers: {
         'Content-Type': contentType,
-        'Content-Length': String(file.size || file.data.buffer.length || 0),
+        'Content-Length': String(rawData.length),
         'Content-Disposition': `attachment; filename="${filename}"`,
         'Cache-Control': 'private, max-age=0, must-revalidate',
       },
