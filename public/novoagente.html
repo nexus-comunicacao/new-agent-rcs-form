@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Abertura de Agente RCS - NEXUS Comunicacao</title>
+<link rel="icon" type="image/x-icon" href="./assets/nexus-comunicacao.ico">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./novoagente.css">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+</head>
+<body>
+
+<div class="bg-mesh"></div>
+<div class="grid-lines"></div>
+
+<div class="wrapper">
+
+  
+  <div class="header">
+    <div class="logo-block">
+      <img src="./assets/logo-nexus.svg" alt="NEXUS Comunicacao" class="logo-image">
+      <div class="header-tag">✦ Novo Agente RCS</div>
+    </div>
+    <h1>Abra seu agente<br><em>RCS oficial</em></h1>
+    <p>Preencha as informações abaixo. Nossa equipe cuidará de todo o processo de aprovação junto ao Google.</p>
+  </div>
+
+  
+  <div class="progress-wrap">
+    <div class="progress-steps">
+      <div class="step-dot active" id="dot-1">
+        <div class="dot-circle">1</div>
+        <div class="dot-label">Empresa</div>
+      </div>
+      <div class="step-dot" id="dot-2">
+        <div class="dot-circle">2</div>
+        <div class="dot-label">Identidade</div>
+      </div>
+      <div class="step-dot" id="dot-3">
+        <div class="dot-circle">3</div>
+        <div class="dot-label">Contato</div>
+      </div>
+      <div class="step-dot" id="dot-4">
+        <div class="dot-circle">4</div>
+        <div class="dot-label">Revisão</div>
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="card" id="main-card">
+
+    
+    <div class="step-panel active" id="step-1">
+      <div class="step-title">Dados da empresa</div>
+      <div class="step-subtitle">Essas informações identificam o seu agente para o Google e para os usuários.</div>
+
+      <div class="info-banner">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <p>O <strong>nome de exibição</strong> é o que aparece para quem recebe sua mensagem. Escolha com cuidado — a alteração futura exige novo processo de aprovação.</p>
+      </div>
+
+      <div class="field" id="field-nome">
+        <label>Nome de exibição <span class="required">*</span></label>
+        <input type="text" id="nome" placeholder="Ex: Farmácia São Paulo" maxlength="40">
+        <div class="field-hint">Máximo de <strong>40 caracteres</strong>. Sem caracteres especiais ou quebras de linha.</div>
+        <div class="field-error">Por favor, informe o nome de exibição.</div>
+      </div>
+
+      <div class="field" id="field-descricao">
+        <label>Descrição do agente <span class="required">*</span></label>
+        <textarea id="descricao" placeholder="Ex: Canal oficial de ofertas e novidades da Farmácia São Paulo." maxlength="100"></textarea>
+        <div class="field-hint">Máximo de <strong>100 caracteres</strong>. Descreva o propósito do agente de forma clara e objetiva.</div>
+        <div class="field-error">Por favor, informe a descrição do agente.</div>
+      </div>
+
+      <div class="field" id="field-website">
+        <label>Website da empresa <span class="required">*</span></label>
+        <input type="url" id="website" placeholder="https://www.suaempresa.com.br">
+        <div class="field-error">Por favor, informe o website da empresa.</div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-next" onclick="goToStep(2)">Continuar →</button>
+      </div>
+    </div>
+
+    
+    <div class="step-panel" id="step-2">
+      <div class="step-title">Identidade visual</div>
+      <div class="step-subtitle">Arquivos que representam a marca do seu agente. Siga as especificações para garantir a aprovação.</div>
+
+      <div class="field" id="field-banner">
+        <label>Banner do agente <span class="required">*</span></label>
+        <div class="upload-area" id="upload-banner" ondragover="handleDragOver(event, this)" ondragleave="handleDragLeave(this)" ondrop="handleDrop(event, 'banner')">
+          <input type="file" id="banner" accept="image/png,image/jpeg,image/jpg" onchange="handleFileSelect(this, 'banner')">
+          <div class="upload-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#FF6B2B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="3 9 9 9 9 3"/><polyline points="15 3 21 3 21 9"/><polyline points="21 15 21 21 15 21"/><polyline points="9 21 3 21 3 15"/>
+            </svg>
+          </div>
+          <p><strong>Clique para enviar</strong> ou arraste o arquivo aqui</p>
+          <p class="upload-size-hint">PNG ou JPG · 1440 × 448 px · máx. 10 MB</p>
+          <div class="file-name" id="banner-name"></div>
+        </div>
+        <div class="field-hint">Exibido quando o usuário visualiza as informações do agente.</div>
+        <div class="field-error">Por favor, envie o banner do agente.</div>
+      </div>
+
+      <div class="field" id="field-logo">
+        <label>Logotipo <span class="required">*</span></label>
+        <div class="upload-area" id="upload-logo" ondragover="handleDragOver(event, this)" ondragleave="handleDragLeave(this)" ondrop="handleDrop(event, 'logo')">
+          <input type="file" id="logo" accept="image/png,image/jpeg,image/jpg" onchange="handleFileSelect(this, 'logo')">
+          <div class="upload-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#FF6B2B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+            </svg>
+          </div>
+          <p><strong>Clique para enviar</strong> ou arraste o arquivo aqui</p>
+          <p class="upload-size-hint">PNG ou JPG · 224 × 224 px · máx. 10 MB</p>
+          <div class="file-name" id="logo-name"></div>
+        </div>
+        <div class="field-hint">Aparece ao lado de cada mensagem enviada pelo agente.</div>
+        <div class="field-error">Por favor, envie o logotipo.</div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-back" onclick="goToStep(1)">← Voltar</button>
+        <button class="btn-next" onclick="goToStep(3)">Continuar →</button>
+      </div>
+    </div>
+
+    
+    <div class="step-panel" id="step-3">
+      <div class="step-title">Informações de contato</div>
+      <div class="step-subtitle">Dados para vincular o agente ao seu número e facilitar a comunicação com a nossa equipe.</div>
+
+      <div class="field" id="field-telefone">
+        <label>Número de telefone <span class="required">*</span></label>
+        <input type="tel" id="telefone" placeholder="+5511999999999">
+        <div class="field-hint">Formato internacional E.164: começa com <strong>+</strong>, código do país e número completo sem espaços. Ex: <strong>+5511999999999</strong></div>
+        <div class="field-error">Por favor, informe o telefone no formato correto (ex: +5511999999999).</div>
+      </div>
+
+      <div class="two-cols">
+        <div class="field" id="field-responsavel">
+          <label>Nome do responsável <span class="required">*</span></label>
+          <input type="text" id="responsavel" placeholder="Nome completo">
+          <div class="field-error">Campo obrigatório.</div>
+        </div>
+        <div class="field" id="field-cargo">
+          <label>Cargo</label>
+          <input type="text" id="cargo" placeholder="Ex: Gerente de Marketing">
+        </div>
+      </div>
+
+      <div class="field" id="field-email">
+        <label>E-mail <span class="required">*</span></label>
+        <input type="email" id="email" placeholder="contato@suaempresa.com.br">
+        <div class="field-error">Por favor, informe um e-mail válido.</div>
+      </div>
+
+      <div class="field">
+        <label>Segmento de atuação</label>
+        <select id="segmento">
+          <option value="" disabled selected>Selecione...</option>
+          <option>Varejo / E-commerce</option>
+          <option>Saúde e Farmácia</option>
+          <option>Educação</option>
+          <option>Financeiro / Seguros</option>
+          <option>Imobiliário / Construção</option>
+          <option>Alimentação e Restaurantes</option>
+          <option>Telecomunicações</option>
+          <option>Serviços</option>
+          <option>Outro</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Informações adicionais</label>
+        <textarea id="adicional" placeholder="Alguma observação, dúvida ou detalhe que queira nos informar?"></textarea>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-back" onclick="goToStep(2)">← Voltar</button>
+        <button class="btn-next" onclick="goToStep(4)">Revisar →</button>
+      </div>
+    </div>
+
+    
+    <div class="step-panel" id="step-4">
+      <div class="step-title">Revise as informações</div>
+      <div class="step-subtitle">Confira os dados antes de enviar. Nossa equipe entrará em contato em até 1 dia útil.</div>
+
+      <div class="review-group">
+        <div class="review-group-title">Dados da empresa</div>
+        <div class="review-row">
+          <span class="review-label">Nome de exibição</span>
+          <span class="review-value" id="rv-nome">—</span>
+        </div>
+        <div class="review-row">
+          <span class="review-label">Descrição</span>
+          <span class="review-value" id="rv-descricao">—</span>
+        </div>
+        <div class="review-row">
+          <span class="review-label">Website</span>
+          <span class="review-value" id="rv-website">—</span>
+        </div>
+      </div>
+
+      <div class="review-group">
+        <div class="review-group-title">Identidade visual</div>
+        <div class="review-row">
+          <span class="review-label">Banner</span>
+          <span class="review-value" id="rv-banner">—</span>
+        </div>
+        <div class="review-row">
+          <span class="review-label">Logotipo</span>
+          <span class="review-value" id="rv-logo">—</span>
+        </div>
+      </div>
+
+      <div class="review-group">
+        <div class="review-group-title">Contato</div>
+        <div class="review-row">
+          <span class="review-label">Telefone</span>
+          <span class="review-value" id="rv-telefone">—</span>
+        </div>
+        <div class="review-row">
+          <span class="review-label">Responsável</span>
+          <span class="review-value" id="rv-responsavel">—</span>
+        </div>
+        <div class="review-row">
+          <span class="review-label">E-mail</span>
+          <span class="review-value" id="rv-email">—</span>
+        </div>
+        <div class="review-row">
+          <span class="review-label">Segmento</span>
+          <span class="review-value" id="rv-segmento">—</span>
+        </div>
+      </div>
+
+      <div class="timeline">
+        <div class="review-group-title" style="margin-bottom: 16px;">O que acontece após o envio</div>
+        <div class="timeline-item">
+          <div class="tl-num">1</div>
+          <div class="tl-content">
+            <strong>Nossa equipe revisa os dados</strong>
+            <span>Em até 1 dia útil entramos em contato para confirmar e iniciar o processo.</span>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="tl-num">2</div>
+          <div class="tl-content">
+            <strong>Submissão ao Google</strong>
+            <span>Criamos o agente e submetemos para aprovação. O Google pode pedir confirmações de marca.</span>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="tl-num">3</div>
+          <div class="tl-content">
+            <strong>Agente aprovado e ativo</strong>
+            <span>Prazo total de até 15 dias. Você recebe o acesso e já pode disparar pela plataforma NEXUS.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-back" onclick="goToStep(3)">← Voltar</button>
+        <button class="btn-next" id="btn-submit" onclick="submitForm()">Enviar solicitação ✓</button>
+      </div>
+    </div>
+
+    
+    <div class="success-panel" id="success">
+      <div class="success-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+      </div>
+      <h2>Solicitação enviada!</h2>
+      <p>Recebemos suas informações. Nossa equipe entrará em contato em breve para dar início ao processo.</p>
+      <div class="success-timeline">
+        <strong>Próximas etapas</strong>
+        <p>Nossa equipe revisa os dados, submete ao Google e acompanha cada etapa da aprovação. Você será notificado por e-mail.</p>
+        <div class="timeline-pills">
+          <span class="timeline-pill">Revisão interna: 1 dia útil</span>
+          <span class="timeline-pill">Aprovação Google: até 15 dias</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  
+  <div class="footer">
+    <p>Dúvidas? Fale com a NEXUS: <a href="mailto:contato@nexuscomunicacao.com.br">contato@nexuscomunicacao.com.br</a></p>
+  </div>
+
+</div>
+<script src="./novoagente.js" defer></script>
+</body>
+</html>

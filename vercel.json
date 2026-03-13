@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "app/api/novo-agente/route.js": {
+      "maxDuration": 30
+    }
+  }
+}
