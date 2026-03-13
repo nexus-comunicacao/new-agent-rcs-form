@@ -60,10 +60,40 @@ function checkField(id, validator) {
   return ok;
 }
 
+function normalizePhoneValue(value) {
+  if (!value) return "";
+
+  let normalized = value.replace(/[^\d+]/g, "");
+  if (normalized.startsWith("+")) {
+    normalized = `+${normalized.slice(1).replace(/\+/g, "")}`;
+  } else {
+    normalized = normalized.replace(/\+/g, "");
+  }
+
+  return normalized;
+}
+
+function setupPhoneField() {
+  const phoneInput = document.getElementById("telefone");
+  if (!phoneInput) return;
+
+  phoneInput.addEventListener("focus", () => {
+    if (!phoneInput.value.trim()) {
+      phoneInput.value = "+55";
+    }
+  });
+
+  phoneInput.addEventListener("input", () => {
+    phoneInput.value = normalizePhoneValue(phoneInput.value);
+  });
+}
+
 document.addEventListener("input", (event) => {
   const field = event.target.closest(".field");
   if (field) field.classList.remove("has-error");
 });
+
+setupPhoneField();
 
 function handleFileSelect(input, type) {
   if (input.files && input.files[0]) {
