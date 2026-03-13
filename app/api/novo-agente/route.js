@@ -16,6 +16,40 @@ const EMAILJS_TEMPLATE_ID = process.env.EMAILJS_TEMPLATE_ID || '';
 const EMAILJS_PUBLIC_KEY = process.env.EMAILJS_PUBLIC_KEY || '';
 const EMAILJS_PRIVATE_KEY = process.env.EMAILJS_PRIVATE_KEY || '';
 
+function slugifyName(value) {
+  return (value || 'arquivo')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-zA-Z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .toLowerCase() || 'arquivo';
+}
+
+function extractExtension(filename, mimeType) {
+  const parts = (filename || '').split('.');
+  const rawExt = parts.length > 1 ? parts.pop() : '';
+  const ext = (rawExt || '').toLowerCase();
+
+  if (ext) {
+    return ext;
+  }
+
+  if (mimeType === 'image/png') {
+    return 'png';
+  }
+  if (mimeType === 'image/jpeg' || mimeType === 'image/jpg') {
+    return 'jpg';
+  }
+
+  return 'bin';
+}
+
+function buildStoredFileName(displayName, kind, originalName, mimeType) {
+  const base = slugifyName(displayName);
+  const ext = extractExtension(originalName, mimeType);
+  return `${base}-${kind}.${ext}`;
+}
+
 function signFileLink(fileId, exp) {
   return createHmac('sha256', DOWNLOAD_LINK_SECRET)
     .update(`${fileId}:${exp}`)
@@ -105,8 +139,9 @@ export async function POST(request) {
 
     if (banner && banner.size > 0) {
       const buffer = Buffer.from(await banner.arrayBuffer());
+      const storedBannerName = buildStoredFileName(data.nome, 'banner', banner.name, banner.type);
       const fileDoc = await db.collection('agent_files').insertOne({
-        filename: banner.name,
+        filename: storedBannerName,
         contentType: banner.type,
         size: banner.size,
         data: new Binary(buffer),
@@ -114,7 +149,7 @@ export async function POST(request) {
       });
       fileRefs.banner = {
         fileId: fileDoc.insertedId,
-        filename: banner.name,
+        filename: storedBannerName,
         contentType: banner.type,
         size: banner.size,
       };
@@ -122,8 +157,9 @@ export async function POST(request) {
 
     if (logo && logo.size > 0) {
       const buffer = Buffer.from(await logo.arrayBuffer());
+      const storedLogoName = buildStoredFileName(data.nome, 'logo', logo.name, logo.type);
       const fileDoc = await db.collection('agent_files').insertOne({
-        filename: logo.name,
+        filename: storedLogoName,
         contentType: logo.type,
         size: logo.size,
         data: new Binary(buffer),
@@ -131,7 +167,7 @@ export async function POST(request) {
       });
       fileRefs.logo = {
         fileId: fileDoc.insertedId,
-        filename: logo.name,
+        filename: storedLogoName,
         contentType: logo.type,
         size: logo.size,
       };
