@@ -3,7 +3,7 @@ import { ObjectId } from 'mongodb';
 import clientPromise from '../../../../../lib/mongodb';
 
 const DB_NAME = process.env.MONGODB_DB || 'nexus-apps';
-const não DOWNLOAD_LINK_SECRET = process.env.DOWNLOAD_LINK_SECRET || '';
+const DOWNLOAD_LINK_SECRET = process.env.DOWNLOAD_LINK_SECRET || '';
 
 function signFileLink(fileId, exp) {
   return createHmac('sha256', DOWNLOAD_LINK_SECRET)
