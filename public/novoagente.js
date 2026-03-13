@@ -43,7 +43,10 @@ function validateStep(step) {
     const telRegex = /^\+[1-9]\d{7,14}$/;
     valid = checkField("telefone", (v) => telRegex.test(v.trim())) && valid;
     valid = checkField("responsavel", (v) => v.trim().length > 0) && valid;
+    valid = checkField("cargo", (v) => v.trim().length > 0) && valid;
     valid = checkField("email", (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim())) && valid;
+    valid = checkField("segmento", (v) => v.trim().length > 0) && valid;
+    valid = checkField("adicional", (v) => v.trim().length > 0) && valid;
   }
 
   return valid;
@@ -168,6 +171,8 @@ async function submitForm() {
       throw new Error(err.error || "Erro ao salvar dados");
     }
 
+    const result = await response.json().catch(() => ({}));
+
     if (window.emailjs) {
       try {
         await window.emailjs.send(CONFIG.EMAILJS_SERVICE_ID, CONFIG.EMAILJS_TEMPLATE_ID, {
@@ -181,6 +186,8 @@ async function submitForm() {
           adicional: campos.adicional || "Nenhuma",
           banner_nome: files.banner ? files.banner.name : "Nao enviado",
           logo_nome: files.logo ? files.logo.name : "Nao enviado",
+          banner_link: result?.downloadLinks?.banner || "Nao enviado",
+          logo_link: result?.downloadLinks?.logo || "Nao enviado",
         });
       } catch (emailError) {
         console.warn("EmailJS falhou (dados ja salvos no banco):", emailError);

@@ -102,6 +102,7 @@ Na Vercel, adicione as **Environment Variables**:
 | `MONGODB_URI` | `mongodb+srv://usuario:senha@cluster.xxxxx.mongodb.net/...` |
 | `MONGODB_DB` | `nexus-apps` |
 | `ALLOWED_ORIGINS` | `https://seu-projeto.vercel.app` (ou `*` para teste) |
+| `DOWNLOAD_LINK_SECRET` | chave secreta longa para assinar links de download (expira em 120h) |
 
 Essas variáveis são usadas no backend (`app/api/novo-agente/route.js` e `lib/mongodb.js`).
 
