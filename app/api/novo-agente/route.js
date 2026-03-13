@@ -1,6 +1,7 @@
 import { createHmac } from 'crypto';
 import { Binary } from 'mongodb';
 import clientPromise from '../../../lib/mongodb';
+import emailjs from '@emailjs/nodejs';
 
 const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS
   ? process.env.ALLOWED_ORIGINS.split(',')
@@ -9,6 +10,11 @@ const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS
 const DB_NAME = process.env.MONGODB_DB || 'nexus-apps';
 const DOWNLOAD_LINK_SECRET = process.env.DOWNLOAD_LINK_SECRET || '';
 const DOWNLOAD_LINK_TTL_MS = 120 * 60 * 60 * 1000;
+
+const EMAILJS_SERVICE_ID = process.env.EMAILJS_SERVICE_ID || '';
+const EMAILJS_TEMPLATE_ID = process.env.EMAILJS_TEMPLATE_ID || '';
+const EMAILJS_PUBLIC_KEY = process.env.EMAILJS_PUBLIC_KEY || '';
+const EMAILJS_PRIVATE_KEY = process.env.EMAILJS_PRIVATE_KEY || '';
 
 function signFileLink(fileId, exp) {
   return createHmac('sha256', DOWNLOAD_LINK_SECRET)
@@ -145,6 +151,36 @@ export async function POST(request) {
     };
 
     console.log(`[novo-agente] Submission saved: ${result.insertedId}`);
+
+    if (EMAILJS_SERVICE_ID && EMAILJS_TEMPLATE_ID && EMAILJS_PUBLIC_KEY) {
+      try {
+        await emailjs.send(
+          EMAILJS_SERVICE_ID,
+          EMAILJS_TEMPLATE_ID,
+          {
+            nome: data.nome,
+            descricao: data.descricao,
+            website: data.website,
+            telefone: data.telefone,
+            responsavel: `${data.responsavel}${data.cargo ? ` (${data.cargo})` : ''}`,
+            email: data.email,
+            segmento: data.segmento,
+            adicional: data.adicional,
+            banner_nome: fileRefs.banner?.filename || 'Nao enviado',
+            logo_nome: fileRefs.logo?.filename || 'Nao enviado',
+            banner_link: downloadLinks.banner || 'Nao disponivel',
+            logo_link: downloadLinks.logo || 'Nao disponivel',
+          },
+          {
+            publicKey: EMAILJS_PUBLIC_KEY,
+            privateKey: EMAILJS_PRIVATE_KEY || undefined,
+          }
+        );
+        console.log(`[novo-agente] Email sent for: ${result.insertedId}`);
+      } catch (emailError) {
+        console.error('[novo-agente] EmailJS error (data saved):', emailError);
+      }
+    }
 
     return Response.json(
       {

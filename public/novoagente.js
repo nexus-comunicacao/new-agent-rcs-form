@@ -122,14 +122,7 @@ function populateReview() {
 
 const CONFIG = {
   API_URL: "/api/novo-agente",
-  EMAILJS_PUBLIC_KEY: "SUA_PUBLIC_KEY",
-  EMAILJS_SERVICE_ID: "SUA_SERVICE_ID",
-  EMAILJS_TEMPLATE_ID: "SUA_TEMPLATE_ID",
 };
-
-if (window.emailjs) {
-  window.emailjs.init(CONFIG.EMAILJS_PUBLIC_KEY);
-}
 
 async function submitForm() {
   if (!validateStep(1) || !validateStep(2) || !validateStep(3)) {
@@ -172,27 +165,6 @@ async function submitForm() {
     }
 
     const result = await response.json().catch(() => ({}));
-
-    if (window.emailjs) {
-      try {
-        await window.emailjs.send(CONFIG.EMAILJS_SERVICE_ID, CONFIG.EMAILJS_TEMPLATE_ID, {
-          nome: campos.nome,
-          descricao: campos.descricao,
-          website: campos.website,
-          telefone: campos.telefone,
-          responsavel: `${campos.responsavel}${campos.cargo ? ` (${campos.cargo})` : ""}`,
-          email: campos.email,
-          segmento: campos.segmento || "Nao informado",
-          adicional: campos.adicional || "Nenhuma",
-          banner_nome: files.banner ? files.banner.name : "Nao enviado",
-          logo_nome: files.logo ? files.logo.name : "Nao enviado",
-          banner_link: result?.downloadLinks?.banner || "Nao enviado",
-          logo_link: result?.downloadLinks?.logo || "Nao enviado",
-        });
-      } catch (emailError) {
-        console.warn("EmailJS falhou (dados ja salvos no banco):", emailError);
-      }
-    }
 
     showSuccess();
   } catch (error) {
