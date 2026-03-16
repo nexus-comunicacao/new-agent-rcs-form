@@ -29,6 +29,9 @@ function validateStep(step) {
     valid = checkField("nome", (v) => v.trim().length > 0) && valid;
     valid = checkField("descricao", (v) => v.trim().length > 0) && valid;
     valid = checkField("website", (v) => v.trim().length > 0 && v.startsWith("http")) && valid;
+    valid = checkField("cnpj", (v) => /^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/.test(v.trim())) && valid;
+    valid = checkField("privacidade", (v) => v.trim().length > 0 && v.startsWith("http")) && valid;
+    valid = checkField("termos", (v) => v.trim().length > 0 && v.startsWith("http")) && valid;
   }
 
   if (step === 2) {
@@ -95,6 +98,25 @@ document.addEventListener("input", (event) => {
 
 setupPhoneField();
 
+function applyCnpjMask(value) {
+  const digits = value.replace(/\D/g, "").slice(0, 14);
+  if (digits.length <= 2) return digits;
+  if (digits.length <= 5) return `${digits.slice(0,2)}.${digits.slice(2)}`;
+  if (digits.length <= 8) return `${digits.slice(0,2)}.${digits.slice(2,5)}.${digits.slice(5)}`;
+  if (digits.length <= 12) return `${digits.slice(0,2)}.${digits.slice(2,5)}.${digits.slice(5,8)}/${digits.slice(8)}`;
+  return `${digits.slice(0,2)}.${digits.slice(2,5)}.${digits.slice(5,8)}/${digits.slice(8,12)}-${digits.slice(12)}`;
+}
+
+function setupCnpjField() {
+  const cnpjInput = document.getElementById("cnpj");
+  if (!cnpjInput) return;
+  cnpjInput.addEventListener("input", () => {
+    cnpjInput.value = applyCnpjMask(cnpjInput.value);
+  });
+}
+
+setupCnpjField();
+
 function handleFileSelect(input, type) {
   if (input.files && input.files[0]) {
     setFile(type, input.files[0]);
@@ -125,6 +147,16 @@ function setFile(type, file) {
     nameEl.textContent = `Arquivo: ${file.name}`;
     nameEl.style.display = "block";
   }
+  const areaEl = document.getElementById(`upload-${type}`);
+  const previewEl = document.getElementById(`${type}-preview`);
+  if (previewEl && areaEl) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      previewEl.src = e.target.result;
+      areaEl.classList.add("has-file");
+    };
+    reader.readAsDataURL(file);
+  }
   document.getElementById(`field-${type}`)?.classList.remove("has-error");
 }
 
@@ -142,8 +174,26 @@ function populateReview() {
   setValue("nome", document.getElementById("nome")?.value || "");
   setValue("descricao", document.getElementById("descricao")?.value || "");
   setValue("website", document.getElementById("website")?.value || "");
+  setValue("cnpj", document.getElementById("cnpj")?.value || "");
+  setValue("privacidade", document.getElementById("privacidade")?.value || "");
+  setValue("termos", document.getElementById("termos")?.value || "");
   setValue("banner", files.banner ? files.banner.name : "");
   setValue("logo", files.logo ? files.logo.name : "");
+
+  const rvBannerImg = document.getElementById("rv-banner-img");
+  const rvLogoImg = document.getElementById("rv-logo-img");
+  const bannerSrc = document.getElementById("banner-preview")?.src || "";
+  const logoSrc = document.getElementById("logo-preview")?.src || "";
+
+  if (rvBannerImg) {
+    rvBannerImg.src = bannerSrc;
+    rvBannerImg.style.display = bannerSrc ? "block" : "none";
+  }
+  if (rvLogoImg) {
+    rvLogoImg.src = logoSrc;
+    rvLogoImg.style.display = logoSrc ? "block" : "none";
+  }
+
   setValue("telefone", document.getElementById("telefone")?.value || "");
   setValue("responsavel", `${responsavel}${cargo ? ` (${cargo})` : ""}`.trim());
   setValue("email", document.getElementById("email")?.value || "");
@@ -170,6 +220,9 @@ async function submitForm() {
     nome: document.getElementById("nome")?.value.trim() || "",
     descricao: document.getElementById("descricao")?.value.trim() || "",
     website: document.getElementById("website")?.value.trim() || "",
+    cnpj: document.getElementById("cnpj")?.value.trim() || "",
+    privacidade: document.getElementById("privacidade")?.value.trim() || "",
+    termos: document.getElementById("termos")?.value.trim() || "",
     telefone: document.getElementById("telefone")?.value.trim() || "",
     responsavel: document.getElementById("responsavel")?.value.trim() || "",
     cargo: document.getElementById("cargo")?.value.trim() || "",

@@ -98,6 +98,9 @@ export async function POST(request) {
       nome: formData.get('nome')?.toString().trim() || '',
       descricao: formData.get('descricao')?.toString().trim() || '',
       website: formData.get('website')?.toString().trim() || '',
+      cnpj: formData.get('cnpj')?.toString().trim() || '',
+      privacidade: formData.get('privacidade')?.toString().trim() || '',
+      termos: formData.get('termos')?.toString().trim() || '',
       telefone: formData.get('telefone')?.toString().trim() || '',
       responsavel: formData.get('responsavel')?.toString().trim() || '',
       cargo: formData.get('cargo')?.toString().trim() || '',
@@ -115,6 +118,9 @@ export async function POST(request) {
       !data.nome ||
       !data.descricao ||
       !data.website ||
+      !data.cnpj ||
+      !data.privacidade ||
+      !data.termos ||
       !data.telefone ||
       !data.responsavel ||
       !data.cargo ||
@@ -197,6 +203,9 @@ export async function POST(request) {
             nome: data.nome,
             descricao: data.descricao,
             website: data.website,
+            cnpj: data.cnpj,
+            privacidade: data.privacidade,
+            termos: data.termos,
             telefone: data.telefone,
             responsavel: `${data.responsavel}${data.cargo ? ` (${data.cargo})` : ''}`,
             email: data.email,

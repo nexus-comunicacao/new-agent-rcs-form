@@ -6,7 +6,7 @@
 <title>Abertura de Agente RCS - NEXUS Comunicacao</title>
 <link rel="icon" type="image/x-icon" href="./assets/nexus-comunicacao.ico">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="./novoagente.css?v=3">
+<link rel="stylesheet" href="./novoagente.css?v=5">
 </head>
 <body>
 
@@ -82,6 +82,32 @@
         <div class="field-error">Por favor, informe o website da empresa.</div>
       </div>
 
+      <div class="info-banner">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+        <p>Os campos abaixo são exigidos pelo <strong>Google</strong> para o processo de verificação do agente.</p>
+      </div>
+
+      <div class="field" id="field-cnpj">
+        <label>CNPJ <span class="required">*</span></label>
+        <input type="text" id="cnpj" placeholder="00.000.000/0000-00" maxlength="18" inputmode="numeric">
+        <div class="field-hint">Número de inscrição da empresa no Cadastro Nacional de Pessoas Jurídicas.</div>
+        <div class="field-error">Por favor, informe o CNPJ da empresa.</div>
+      </div>
+
+      <div class="field" id="field-privacidade">
+        <label>Link Política de Privacidade <span class="required">*</span></label>
+        <input type="url" id="privacidade" placeholder="https://www.suaempresa.com.br/politica-de-privacidade">
+        <div class="field-error">Por favor, informe o link da Política de Privacidade.</div>
+      </div>
+
+      <div class="field" id="field-termos">
+        <label>Link Termos de Serviços <span class="required">*</span></label>
+        <input type="url" id="termos" placeholder="https://www.suaempresa.com.br/termos-de-servico">
+        <div class="field-error">Por favor, informe o link dos Termos de Serviços.</div>
+      </div>
+
       <div class="btn-row">
         <button class="btn-next" onclick="goToStep(2)">Continuar →</button>
       </div>
@@ -96,13 +122,16 @@
         <label>Banner do agente <span class="required">*</span></label>
         <div class="upload-area" id="upload-banner" ondragover="handleDragOver(event, this)" ondragleave="handleDragLeave(this)" ondrop="handleDrop(event, 'banner')">
           <input type="file" id="banner" accept="image/png,image/jpeg,image/jpg" onchange="handleFileSelect(this, 'banner')">
-          <div class="upload-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#FF6B2B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="3 9 9 9 9 3"/><polyline points="15 3 21 3 21 9"/><polyline points="21 15 21 21 15 21"/><polyline points="9 21 3 21 3 15"/>
-            </svg>
+          <div class="upload-content">
+            <div class="upload-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#FF6B2B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="3 9 9 9 9 3"/><polyline points="15 3 21 3 21 9"/><polyline points="21 15 21 21 15 21"/><polyline points="9 21 3 21 3 15"/>
+              </svg>
+            </div>
+            <p><strong>Clique para enviar</strong> ou arraste o arquivo aqui</p>
+            <p class="upload-size-hint">PNG ou JPG · 1440 × 448 px · máx. 10 MB</p>
           </div>
-          <p><strong>Clique para enviar</strong> ou arraste o arquivo aqui</p>
-          <p class="upload-size-hint">PNG ou JPG · 1440 × 448 px · máx. 10 MB</p>
+          <img id="banner-preview" class="upload-preview" src="" alt="Preview do banner">
           <div class="file-name" id="banner-name"></div>
         </div>
         <div class="field-hint">Exibido quando o usuário visualiza as informações do agente.</div>
@@ -113,13 +142,16 @@
         <label>Logotipo <span class="required">*</span></label>
         <div class="upload-area" id="upload-logo" ondragover="handleDragOver(event, this)" ondragleave="handleDragLeave(this)" ondrop="handleDrop(event, 'logo')">
           <input type="file" id="logo" accept="image/png,image/jpeg,image/jpg" onchange="handleFileSelect(this, 'logo')">
-          <div class="upload-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#FF6B2B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
-            </svg>
+          <div class="upload-content">
+            <div class="upload-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#FF6B2B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+              </svg>
+            </div>
+            <p><strong>Clique para enviar</strong> ou arraste o arquivo aqui</p>
+            <p class="upload-size-hint">PNG ou JPG · 224 × 224 px · máx. 10 MB</p>
           </div>
-          <p><strong>Clique para enviar</strong> ou arraste o arquivo aqui</p>
-          <p class="upload-size-hint">PNG ou JPG · 224 × 224 px · máx. 10 MB</p>
+          <img id="logo-preview" class="upload-preview upload-preview--logo" src="" alt="Preview do logotipo">
           <div class="file-name" id="logo-name"></div>
         </div>
         <div class="field-hint">Aparece ao lado de cada mensagem enviada pelo agente.</div>
@@ -182,7 +214,7 @@
 
       <div class="field" id="field-adicional">
         <label>Informações adicionais <span class="required">*</span></label>
-        <textarea id="adicional" placeholder="Alguma observação, dúvida ou detalhe que queira nos informar?"></textarea>
+        <textarea id="adicional" placeholder="Ex: Pretendo enviar campanhas de promoções mensais para base de 50 mil clientes"></textarea>
         <div class="field-error">Campo obrigatório.</div>
       </div>
 
@@ -211,17 +243,35 @@
           <span class="review-label">Website</span>
           <span class="review-value" id="rv-website">—</span>
         </div>
+        <div class="review-row">
+          <span class="review-label">CNPJ</span>
+          <span class="review-value" id="rv-cnpj">—</span>
+        </div>
+        <div class="review-row">
+          <span class="review-label">Política de Privacidade</span>
+          <span class="review-value" id="rv-privacidade">—</span>
+        </div>
+        <div class="review-row">
+          <span class="review-label">Termos de Serviços</span>
+          <span class="review-value" id="rv-termos">—</span>
+        </div>
       </div>
 
       <div class="review-group">
         <div class="review-group-title">Identidade visual</div>
-        <div class="review-row">
+        <div class="review-row review-row--image">
           <span class="review-label">Banner</span>
-          <span class="review-value" id="rv-banner">—</span>
+          <div class="review-image-wrap">
+            <img id="rv-banner-img" class="review-thumb review-thumb--banner" src="" alt="Preview do banner">
+            <span class="review-value" id="rv-banner">—</span>
+          </div>
         </div>
-        <div class="review-row">
+        <div class="review-row review-row--image">
           <span class="review-label">Logotipo</span>
-          <span class="review-value" id="rv-logo">—</span>
+          <div class="review-image-wrap">
+            <img id="rv-logo-img" class="review-thumb review-thumb--logo" src="" alt="Preview do logotipo">
+            <span class="review-value" id="rv-logo">—</span>
+          </div>
         </div>
       </div>
 
@@ -303,6 +353,6 @@
   </div>
 
 </div>
-<script src="./novoagente.js?v=4" defer></script>
+<script src="./novoagente.js?v=5" defer></script>
 </body>
 </html>
