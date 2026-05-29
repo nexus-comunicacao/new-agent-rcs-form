@@ -16,6 +16,42 @@ const EMAILJS_TEMPLATE_ID = process.env.EMAILJS_TEMPLATE_ID || '';
 const EMAILJS_PUBLIC_KEY = process.env.EMAILJS_PUBLIC_KEY || '';
 const EMAILJS_PRIVATE_KEY = process.env.EMAILJS_PRIVATE_KEY || '';
 
+const IMAGE_SPECS = {
+  banner: { width: 1440, height: 448, maxBytes: 200 * 1024, label: 'banner' },
+  logo: { width: 224, height: 224, maxBytes: 200 * 1024, label: 'logotipo' },
+};
+
+function readPngDimensions(buffer) {
+  if (buffer.length < 24) return null;
+  const sig = buffer.subarray(0, 8);
+  const pngSig = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
+  if (!sig.equals(pngSig)) return null;
+  if (buffer.toString('ascii', 12, 16) !== 'IHDR') return null;
+  const width = buffer.readUInt32BE(16);
+  const height = buffer.readUInt32BE(20);
+  return { width, height };
+}
+
+function validateImageBuffer(kind, file, buffer) {
+  const spec = IMAGE_SPECS[kind];
+  if (!spec) return null;
+
+  if (file.type !== 'image/png') {
+    return `O ${spec.label} deve estar no formato PNG.`;
+  }
+  if (file.size > spec.maxBytes) {
+    return `O ${spec.label} deve ter no máximo 200 KB.`;
+  }
+  const dims = readPngDimensions(buffer);
+  if (!dims) {
+    return `O ${spec.label} não é um PNG válido.`;
+  }
+  if (dims.width !== spec.width || dims.height !== spec.height) {
+    return `O ${spec.label} deve ter exatamente ${spec.width} × ${spec.height} px.`;
+  }
+  return null;
+}
+
 function slugifyName(value) {
   return (value || 'arquivo')
     .normalize('NFD')
@@ -143,41 +179,53 @@ export async function POST(request) {
 
     const fileRefs = {};
 
-    if (banner && banner.size > 0) {
-      const buffer = Buffer.from(await banner.arrayBuffer());
-      const storedBannerName = buildStoredFileName(data.nome, 'banner', banner.name, banner.type);
-      const fileDoc = await db.collection('agent_files').insertOne({
-        filename: storedBannerName,
-        contentType: banner.type,
-        size: banner.size,
-        data: new Binary(buffer),
-        uploadedAt: new Date(),
-      });
-      fileRefs.banner = {
-        fileId: fileDoc.insertedId,
-        filename: storedBannerName,
-        contentType: banner.type,
-        size: banner.size,
-      };
+    const bannerBuffer = Buffer.from(await banner.arrayBuffer());
+    const bannerError = validateImageBuffer('banner', banner, bannerBuffer);
+    if (bannerError) {
+      return Response.json(
+        { success: false, error: bannerError },
+        { status: 400, headers }
+      );
     }
 
-    if (logo && logo.size > 0) {
-      const buffer = Buffer.from(await logo.arrayBuffer());
-      const storedLogoName = buildStoredFileName(data.nome, 'logo', logo.name, logo.type);
-      const fileDoc = await db.collection('agent_files').insertOne({
-        filename: storedLogoName,
-        contentType: logo.type,
-        size: logo.size,
-        data: new Binary(buffer),
-        uploadedAt: new Date(),
-      });
-      fileRefs.logo = {
-        fileId: fileDoc.insertedId,
-        filename: storedLogoName,
-        contentType: logo.type,
-        size: logo.size,
-      };
+    const logoBuffer = Buffer.from(await logo.arrayBuffer());
+    const logoError = validateImageBuffer('logo', logo, logoBuffer);
+    if (logoError) {
+      return Response.json(
+        { success: false, error: logoError },
+        { status: 400, headers }
+      );
     }
+
+    const storedBannerName = buildStoredFileName(data.nome, 'banner', banner.name, banner.type);
+    const bannerDoc = await db.collection('agent_files').insertOne({
+      filename: storedBannerName,
+      contentType: banner.type,
+      size: banner.size,
+      data: new Binary(bannerBuffer),
+      uploadedAt: new Date(),
+    });
+    fileRefs.banner = {
+      fileId: bannerDoc.insertedId,
+      filename: storedBannerName,
+      contentType: banner.type,
+      size: banner.size,
+    };
+
+    const storedLogoName = buildStoredFileName(data.nome, 'logo', logo.name, logo.type);
+    const logoDoc = await db.collection('agent_files').insertOne({
+      filename: storedLogoName,
+      contentType: logo.type,
+      size: logo.size,
+      data: new Binary(logoBuffer),
+      uploadedAt: new Date(),
+    });
+    fileRefs.logo = {
+      fileId: logoDoc.insertedId,
+      filename: storedLogoName,
+      contentType: logo.type,
+      size: logo.size,
+    };
 
     data.files = fileRefs;
 
