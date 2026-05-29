@@ -1,6 +1,71 @@
 let currentStep = 1;
 const files = { banner: null, logo: null };
 
+const IMAGE_SPECS = {
+  banner: { width: 1440, height: 448, maxBytes: 200 * 1024, label: "banner" },
+  logo: { width: 224, height: 224, maxBytes: 200 * 1024, label: "logotipo" },
+};
+
+function formatKB(bytes) {
+  return `${Math.round(bytes / 1024)} KB`;
+}
+
+function setUploadError(type, message) {
+  const errorEl = document.getElementById(`${type}-error`);
+  const fieldEl = document.getElementById(`field-${type}`);
+  if (errorEl) {
+    errorEl.textContent = message || (type === "banner" ? "Por favor, envie o banner do agente." : "Por favor, envie o logotipo.");
+  }
+  if (fieldEl) fieldEl.classList.toggle("has-error", Boolean(message));
+}
+
+function readImageDimensions(file) {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      const dims = { width: img.naturalWidth, height: img.naturalHeight };
+      URL.revokeObjectURL(url);
+      resolve(dims);
+    };
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error("Não foi possível ler a imagem."));
+    };
+    img.src = url;
+  });
+}
+
+async function validateImageFile(type, file) {
+  const spec = IMAGE_SPECS[type];
+  if (!spec) return { ok: true };
+
+  if (file.type !== "image/png") {
+    return { ok: false, message: `Formato inválido. Envie um arquivo PNG do ${spec.label}.` };
+  }
+
+  if (file.size > spec.maxBytes) {
+    return {
+      ok: false,
+      message: `Arquivo muito grande (${formatKB(file.size)}). O ${spec.label} deve ter no máximo 200 KB.`,
+    };
+  }
+
+  try {
+    const { width, height } = await readImageDimensions(file);
+    if (width !== spec.width || height !== spec.height) {
+      return {
+        ok: false,
+        message: `Dimensões inválidas (${width} × ${height} px). O ${spec.label} deve ter exatamente ${spec.width} × ${spec.height} px.`,
+      };
+    }
+  } catch (err) {
+    return { ok: false, message: "Não foi possível ler a imagem enviada." };
+  }
+
+  return { ok: true };
+}
+
 function goToStep(target) {
   if (target > currentStep && !validateStep(currentStep)) return;
 
@@ -37,8 +102,8 @@ function validateStep(step) {
   if (step === 2) {
     const bannerOk = files.banner !== null;
     const logoOk = files.logo !== null;
-    document.getElementById("field-banner")?.classList.toggle("has-error", !bannerOk);
-    document.getElementById("field-logo")?.classList.toggle("has-error", !logoOk);
+    if (!bannerOk) setUploadError("banner", "Por favor, envie o banner do agente.");
+    if (!logoOk) setUploadError("logo", "Por favor, envie o logotipo.");
     valid = bannerOk && logoOk;
   }
 
@@ -140,7 +205,29 @@ function handleDrop(event, type) {
   if (file) setFile(type, file);
 }
 
-function setFile(type, file) {
+function clearFile(type) {
+  files[type] = null;
+  const input = document.getElementById(type);
+  if (input) input.value = "";
+  const areaEl = document.getElementById(`upload-${type}`);
+  if (areaEl) areaEl.classList.remove("has-file");
+  const previewEl = document.getElementById(`${type}-preview`);
+  if (previewEl) previewEl.src = "";
+  const nameEl = document.getElementById(`${type}-name`);
+  if (nameEl) {
+    nameEl.textContent = "";
+    nameEl.style.display = "none";
+  }
+}
+
+async function setFile(type, file) {
+  const validation = await validateImageFile(type, file);
+  if (!validation.ok) {
+    clearFile(type);
+    setUploadError(type, validation.message);
+    return;
+  }
+
   files[type] = file;
   const nameEl = document.getElementById(`${type}-name`);
   if (nameEl) {
@@ -157,7 +244,7 @@ function setFile(type, file) {
     };
     reader.readAsDataURL(file);
   }
-  document.getElementById(`field-${type}`)?.classList.remove("has-error");
+  setUploadError(type, "");
 }
 
 function populateReview() {

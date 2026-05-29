@@ -6,7 +6,7 @@
 <title>Abertura de Agente RCS - NEXUS Comunicacao</title>
 <link rel="icon" type="image/x-icon" href="./assets/nexus-comunicacao.ico">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="./novoagente.css?v=5">
+<link rel="stylesheet" href="./novoagente.css?v=6">
 </head>
 <body>
 
@@ -121,7 +121,7 @@
       <div class="field" id="field-banner">
         <label>Banner do agente <span class="required">*</span></label>
         <div class="upload-area" id="upload-banner" ondragover="handleDragOver(event, this)" ondragleave="handleDragLeave(this)" ondrop="handleDrop(event, 'banner')">
-          <input type="file" id="banner" accept="image/png,image/jpeg,image/jpg" onchange="handleFileSelect(this, 'banner')">
+          <input type="file" id="banner" accept="image/png" onchange="handleFileSelect(this, 'banner')">
           <div class="upload-content">
             <div class="upload-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="#FF6B2B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -129,19 +129,19 @@
               </svg>
             </div>
             <p><strong>Clique para enviar</strong> ou arraste o arquivo aqui</p>
-            <p class="upload-size-hint">PNG ou JPG · 1440 × 448 px · máx. 10 MB</p>
+            <p class="upload-size-hint">PNG · 1440 × 448 px · máx. 200 KB</p>
           </div>
           <img id="banner-preview" class="upload-preview" src="" alt="Preview do banner">
           <div class="file-name" id="banner-name"></div>
         </div>
-        <div class="field-hint">Exibido quando o usuário visualiza as informações do agente.</div>
-        <div class="field-error">Por favor, envie o banner do agente.</div>
+        <div class="field-hint">Exibido quando o usuário visualiza as informações do agente. Apenas PNG, exatamente <strong>1440 × 448 px</strong>, até <strong>200 KB</strong>.</div>
+        <div class="field-error" id="banner-error">Por favor, envie o banner do agente.</div>
       </div>
 
       <div class="field" id="field-logo">
         <label>Logotipo <span class="required">*</span></label>
         <div class="upload-area" id="upload-logo" ondragover="handleDragOver(event, this)" ondragleave="handleDragLeave(this)" ondrop="handleDrop(event, 'logo')">
-          <input type="file" id="logo" accept="image/png,image/jpeg,image/jpg" onchange="handleFileSelect(this, 'logo')">
+          <input type="file" id="logo" accept="image/png" onchange="handleFileSelect(this, 'logo')">
           <div class="upload-content">
             <div class="upload-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="#FF6B2B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -149,13 +149,13 @@
               </svg>
             </div>
             <p><strong>Clique para enviar</strong> ou arraste o arquivo aqui</p>
-            <p class="upload-size-hint">PNG ou JPG · 224 × 224 px · máx. 10 MB</p>
+            <p class="upload-size-hint">PNG · 224 × 224 px · máx. 200 KB</p>
           </div>
           <img id="logo-preview" class="upload-preview upload-preview--logo" src="" alt="Preview do logotipo">
           <div class="file-name" id="logo-name"></div>
         </div>
-        <div class="field-hint">Aparece ao lado de cada mensagem enviada pelo agente.</div>
-        <div class="field-error">Por favor, envie o logotipo.</div>
+        <div class="field-hint">Aparece ao lado de cada mensagem enviada pelo agente. Apenas PNG, exatamente <strong>224 × 224 px</strong>, até <strong>200 KB</strong>.</div>
+        <div class="field-error" id="logo-error">Por favor, envie o logotipo.</div>
       </div>
 
       <div class="btn-row">
@@ -353,6 +353,6 @@
   </div>
 
 </div>
-<script src="./novoagente.js?v=5" defer></script>
+<script src="./novoagente.js?v=6" defer></script>
 </body>
 </html>
