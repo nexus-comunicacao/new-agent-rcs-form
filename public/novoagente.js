@@ -40,8 +40,8 @@ async function validateImageFile(type, file) {
   const spec = IMAGE_SPECS[type];
   if (!spec) return { ok: true };
 
-  if (file.type !== "image/png") {
-    return { ok: false, message: `Formato inválido. Envie um arquivo PNG do ${spec.label}.` };
+  if (file.type !== "image/png" && file.type !== "image/jpeg") {
+    return { ok: false, message: `Formato inválido. Envie um arquivo PNG ou JPG do ${spec.label}.` };
   }
 
   if (file.size > spec.maxBytes) {
