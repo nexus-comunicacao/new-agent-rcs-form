@@ -32,19 +32,57 @@ function readPngDimensions(buffer) {
   return { width, height };
 }
 
+function readJpegDimensions(buffer) {
+  if (buffer.length < 4 || buffer[0] !== 0xff || buffer[1] !== 0xd8) return null;
+
+  let offset = 2;
+  while (offset < buffer.length) {
+    if (buffer[offset] !== 0xff) return null;
+    let marker = buffer[offset + 1];
+    while (marker === 0xff && offset + 1 < buffer.length) {
+      offset += 1;
+      marker = buffer[offset + 1];
+    }
+    offset += 2;
+
+    if (marker === 0xd8 || marker === 0xd9) return null;
+    if (marker === 0x01 || (marker >= 0xd0 && marker <= 0xd7)) continue;
+
+    if (offset + 1 >= buffer.length) return null;
+    const segmentLength = buffer.readUInt16BE(offset);
+
+    const isSof =
+      marker >= 0xc0 && marker <= 0xcf &&
+      marker !== 0xc4 && marker !== 0xc8 && marker !== 0xcc;
+
+    if (isSof) {
+      if (offset + 7 > buffer.length) return null;
+      const height = buffer.readUInt16BE(offset + 3);
+      const width = buffer.readUInt16BE(offset + 5);
+      return { width, height };
+    }
+
+    offset += segmentLength;
+  }
+  return null;
+}
+
 function validateImageBuffer(kind, file, buffer) {
   const spec = IMAGE_SPECS[kind];
   if (!spec) return null;
 
-  if (file.type !== 'image/png') {
-    return `O ${spec.label} deve estar no formato PNG.`;
+  const isPng = file.type === 'image/png';
+  const isJpeg = file.type === 'image/jpeg' || file.type === 'image/jpg';
+
+  if (!isPng && !isJpeg) {
+    return `O ${spec.label} deve estar no formato PNG ou JPG.`;
   }
   if (file.size > spec.maxBytes) {
     return `O ${spec.label} deve ter no máximo 200 KB.`;
   }
-  const dims = readPngDimensions(buffer);
+  const dims = isPng ? readPngDimensions(buffer) : readJpegDimensions(buffer);
   if (!dims) {
-    return `O ${spec.label} não é um PNG válido.`;
+    return `O ${spec.label} não é um arquivo ${isPng ? 'PNG' : 'JPG'} válido.`;
   }
   if (dims.width !== spec.width || dims.height !== spec.height) {
     return `O ${spec.label} deve ter exatamente ${spec.width} × ${spec.height} px.`;
