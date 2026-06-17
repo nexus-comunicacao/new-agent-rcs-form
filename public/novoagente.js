@@ -1,6 +1,45 @@
 let currentStep = 1;
 const files = { banner: null, logo: null };
 
+// Whitelabel branding (override via ?wl=slug). Values denormalizadas — slug + name
+// vão junto no payload pra Nexus saber de qual revenda é a solicitação sem ter
+// que fazer lookup (RcsRequest mora em outra connection Mongo que os whitelabels).
+const BRANDS = {
+  default: {
+    slug: "default",
+    name: "NEXUS Comunicação",
+    logo: "./assets/logo-nexus.svg",
+    accent: "oklch(0.728 0.1849 50.22)",
+  },
+  agendecomia: {
+    slug: "agendecomia",
+    name: "Agende com IA",
+    logo: "./assets/logo-agendecomia.png",
+    accent: "#1AAB07",
+  },
+};
+
+const brand = (() => {
+  try {
+    const slug = new URLSearchParams(window.location.search).get("wl") || "default";
+    return BRANDS[slug] || BRANDS.default;
+  } catch {
+    return BRANDS.default;
+  }
+})();
+
+function applyBranding() {
+  document.documentElement.style.setProperty("--accent", brand.accent);
+  document.title = `Abertura de Agente RCS - ${brand.name}`;
+  const logoEl = document.querySelector(".logo-image");
+  if (logoEl) {
+    logoEl.src = brand.logo;
+    logoEl.alt = brand.name;
+  }
+}
+
+applyBranding();
+
 const IMAGE_SPECS = {
   banner: { width: 1440, height: 448, maxBytes: 200 * 1024, label: "banner" },
   logo: { width: 224, height: 224, maxBytes: 200 * 1024, label: "logotipo" },
@@ -321,6 +360,8 @@ async function submitForm() {
   try {
     const formData = new FormData();
     Object.entries(campos).forEach(([key, value]) => formData.append(key, value));
+    formData.append("whitelabelSlug", brand.slug);
+    formData.append("whitelabelName", brand.name);
     if (files.banner) formData.append("banner", files.banner);
     if (files.logo) formData.append("logo", files.logo);
 

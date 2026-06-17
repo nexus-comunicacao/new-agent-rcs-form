@@ -168,6 +168,12 @@ export async function POST(request) {
   try {
     const formData = await request.formData();
 
+    // whitelabel — denormalizado (slug + nome) pra Nexus admin distinguir
+    // a origem da solicitação. Default vazio = solicitação enviada pelo form
+    // Nexus direto (sem ?wl=).
+    const whitelabelSlug = formData.get('whitelabelSlug')?.toString().trim() || '';
+    const whitelabelName = formData.get('whitelabelName')?.toString().trim() || '';
+
     const data = {
       nome: formData.get('nome')?.toString().trim() || '',
       descricao: formData.get('descricao')?.toString().trim() || '',
@@ -181,6 +187,8 @@ export async function POST(request) {
       email: formData.get('email')?.toString().trim() || '',
       segmento: formData.get('segmento')?.toString().trim() || '',
       adicional: formData.get('adicional')?.toString().trim() || '',
+      whitelabelSlug: whitelabelSlug && whitelabelSlug !== 'default' ? whitelabelSlug : '',
+      whitelabelName: whitelabelSlug && whitelabelSlug !== 'default' ? whitelabelName : '',
       status: 'pending',
       createdAt: new Date(),
     };
