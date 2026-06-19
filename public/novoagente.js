@@ -17,6 +17,12 @@ const BRANDS = {
     logo: "./assets/logo-agendecomia.png",
     accent: "#1AAB07",
   },
+  msend: {
+    slug: "msend",
+    name: "MSend",
+    logo: "./assets/logo-msend.svg",
+    accent: "#E8213A",
+  },
 };
 
 const brand = (() => {
