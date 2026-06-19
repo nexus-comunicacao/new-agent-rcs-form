@@ -25,8 +25,21 @@ const BRANDS = {
   },
 };
 
+// Mapeamento hostname → slug. Cada revenda aponta um subdomínio próprio
+// (ex.: agente.agendecomia.com.br) pro projeto Vercel — Apache/Vercel
+// resolve, o JS lê o host e aplica o branding sem precisar de ?wl= na URL,
+// pra não expor o domínio Nexus pro cliente da revenda. ?wl= continua
+// funcionando como fallback pra preview/dev.
+const HOST_TO_SLUG = {
+  // TODO: cadastrar aqui cada subdomínio de revenda quando o DNS for criado.
+  // "agente.agendecomia.com.br": "agendecomia",
+};
+
 const brand = (() => {
   try {
+    const host = (window.location.hostname || "").toLowerCase();
+    const fromHost = HOST_TO_SLUG[host];
+    if (fromHost && BRANDS[fromHost]) return BRANDS[fromHost];
     const slug = new URLSearchParams(window.location.search).get("wl") || "default";
     return BRANDS[slug] || BRANDS.default;
   } catch {
