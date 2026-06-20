@@ -31,8 +31,7 @@ const BRANDS = {
 // pra não expor o domínio Nexus pro cliente da revenda. ?wl= continua
 // funcionando como fallback pra preview/dev.
 const HOST_TO_SLUG = {
-  // TODO: cadastrar aqui cada subdomínio de revenda quando o DNS for criado.
-  // "agente.agendecomia.com.br": "agendecomia",
+  "agente.agendecomia.com": "agendecomia",
 };
 
 const brand = (() => {
