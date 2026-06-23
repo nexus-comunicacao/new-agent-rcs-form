@@ -10,18 +10,21 @@ const BRANDS = {
     name: "NEXUS Comunicação",
     logo: "./assets/logo-nexus.svg",
     accent: "oklch(0.728 0.1849 50.22)",
+    supportEmail: "contato@nexuscomunicacao.com.br",
   },
   agendecomia: {
     slug: "agendecomia",
     name: "Agende com IA",
     logo: "./assets/logo-agendecomia.png",
     accent: "#1AAB07",
+    supportEmail: "noreply@agendecomia.com.br",
   },
   msend: {
     slug: "msend",
     name: "MSend",
     logo: "./assets/logo-msend.svg",
     accent: "#E8213A",
+    supportEmail: "contato@msend.com.br",
   },
 };
 
@@ -53,6 +56,15 @@ function applyBranding() {
   if (logoEl) {
     logoEl.src = brand.logo;
     logoEl.alt = brand.name;
+  }
+  const platformEl = document.getElementById("brand-platform-name");
+  if (platformEl) platformEl.textContent = brand.name;
+  const supportNameEl = document.getElementById("brand-support-name");
+  if (supportNameEl) supportNameEl.textContent = brand.name;
+  const supportLinkEl = document.getElementById("brand-support-link");
+  if (supportLinkEl) {
+    supportLinkEl.href = `mailto:${brand.supportEmail}`;
+    supportLinkEl.textContent = brand.supportEmail;
   }
 }
 
