@@ -178,6 +178,8 @@ export async function POST(request) {
       nome: formData.get('nome')?.toString().trim() || '',
       descricao: formData.get('descricao')?.toString().trim() || '',
       website: formData.get('website')?.toString().trim() || '',
+      telefonePerfil: formData.get('telefonePerfil')?.toString().trim() || '',
+      emailPerfil: formData.get('emailPerfil')?.toString().trim() || '',
       cnpj: formData.get('cnpj')?.toString().trim() || '',
       privacidade: formData.get('privacidade')?.toString().trim() || '',
       termos: formData.get('termos')?.toString().trim() || '',
@@ -186,6 +188,8 @@ export async function POST(request) {
       cargo: formData.get('cargo')?.toString().trim() || '',
       email: formData.get('email')?.toString().trim() || '',
       segmento: formData.get('segmento')?.toString().trim() || '',
+      // Só o form Nexus manda — nas revendas o campo nem é exibido.
+      atendimento: formData.get('atendimento')?.toString().trim() || '',
       adicional: formData.get('adicional')?.toString().trim() || '',
       whitelabelSlug: whitelabelSlug && whitelabelSlug !== 'default' ? whitelabelSlug : '',
       whitelabelName: whitelabelSlug && whitelabelSlug !== 'default' ? whitelabelName : '',
@@ -200,6 +204,8 @@ export async function POST(request) {
       !data.nome ||
       !data.descricao ||
       !data.website ||
+      !data.telefonePerfil ||
+      !data.emailPerfil ||
       !data.cnpj ||
       !data.privacidade ||
       !data.termos ||
@@ -297,6 +303,8 @@ export async function POST(request) {
             nome: data.nome,
             descricao: data.descricao,
             website: data.website,
+            telefone_perfil: data.telefonePerfil,
+            email_perfil: data.emailPerfil,
             cnpj: data.cnpj,
             privacidade: data.privacidade,
             termos: data.termos,
@@ -304,6 +312,7 @@ export async function POST(request) {
             responsavel: `${data.responsavel}${data.cargo ? ` (${data.cargo})` : ''}`,
             email: data.email,
             segmento: data.segmento,
+            atendimento: data.atendimento || 'Nao informado',
             adicional: data.adicional,
             banner_nome: fileRefs.banner?.filename || 'Nao enviado',
             logo_nome: fileRefs.logo?.filename || 'Nao enviado',

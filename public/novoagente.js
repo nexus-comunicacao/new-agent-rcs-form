@@ -49,7 +49,18 @@ const brand = (() => {
   }
 })();
 
+// "Responsável pelo atendimento" lista o time comercial da Nexus — o cliente de
+// uma revenda não conhece esses nomes, então o campo só existe na versão default.
+const isNexusBrand = brand.slug === "default";
+
 function applyBranding() {
+  if (!isNexusBrand) {
+    ["field-atendimento", "rv-row-atendimento"].forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = "none";
+    });
+  }
+
   document.documentElement.style.setProperty("--accent", brand.accent);
   document.title = `Abertura de Agente RCS - ${brand.name}`;
   const logoEl = document.querySelector(".logo-image");
@@ -156,6 +167,9 @@ function goToStep(target) {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
+const PHONE_REGEX = /^\+[1-9]\d{7,14}$/;
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 function validateStep(step) {
   let valid = true;
 
@@ -163,6 +177,8 @@ function validateStep(step) {
     valid = checkField("nome", (v) => v.trim().length > 0) && valid;
     valid = checkField("descricao", (v) => v.trim().length > 0) && valid;
     valid = checkField("website", (v) => v.trim().length > 0 && v.startsWith("http")) && valid;
+    valid = checkField("telefonePerfil", (v) => PHONE_REGEX.test(v.trim())) && valid;
+    valid = checkField("emailPerfil", (v) => EMAIL_REGEX.test(v.trim())) && valid;
     valid = checkField("cnpj", (v) => /^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/.test(v.trim())) && valid;
     valid = checkField("privacidade", (v) => v.trim().length > 0 && v.startsWith("http")) && valid;
     valid = checkField("termos", (v) => v.trim().length > 0 && v.startsWith("http")) && valid;
@@ -177,12 +193,14 @@ function validateStep(step) {
   }
 
   if (step === 3) {
-    const telRegex = /^\+[1-9]\d{7,14}$/;
-    valid = checkField("telefone", (v) => telRegex.test(v.trim())) && valid;
+    valid = checkField("telefone", (v) => PHONE_REGEX.test(v.trim())) && valid;
     valid = checkField("responsavel", (v) => v.trim().length > 0) && valid;
     valid = checkField("cargo", (v) => v.trim().length > 0) && valid;
-    valid = checkField("email", (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim())) && valid;
+    valid = checkField("email", (v) => EMAIL_REGEX.test(v.trim())) && valid;
     valid = checkField("segmento", (v) => v.trim().length > 0) && valid;
+    if (isNexusBrand) {
+      valid = checkField("atendimento", (v) => v.trim().length > 0) && valid;
+    }
     valid = checkField("adicional", (v) => v.trim().length > 0) && valid;
   }
 
@@ -210,8 +228,8 @@ function normalizePhoneValue(value) {
   return normalized;
 }
 
-function setupPhoneField() {
-  const phoneInput = document.getElementById("telefone");
+function setupPhoneField(id) {
+  const phoneInput = document.getElementById(id);
   if (!phoneInput) return;
 
   phoneInput.addEventListener("focus", () => {
@@ -228,9 +246,10 @@ function setupPhoneField() {
 document.addEventListener("input", (event) => {
   const field = event.target.closest(".field");
   if (field) field.classList.remove("has-error");
+  updatePreview();
 });
 
-setupPhoneField();
+["telefonePerfil", "telefone"].forEach(setupPhoneField);
 
 function applyCnpjMask(value) {
   const digits = value.replace(/\D/g, "").slice(0, 14);
@@ -287,6 +306,7 @@ function clearFile(type) {
     nameEl.textContent = "";
     nameEl.style.display = "none";
   }
+  updatePreview();
 }
 
 async function setFile(type, file) {
@@ -310,6 +330,7 @@ async function setFile(type, file) {
     reader.onload = (e) => {
       previewEl.src = e.target.result;
       areaEl.classList.add("has-file");
+      updatePreview();
     };
     reader.readAsDataURL(file);
   }
@@ -330,6 +351,8 @@ function populateReview() {
   setValue("nome", document.getElementById("nome")?.value || "");
   setValue("descricao", document.getElementById("descricao")?.value || "");
   setValue("website", document.getElementById("website")?.value || "");
+  setValue("telefonePerfil", document.getElementById("telefonePerfil")?.value || "");
+  setValue("emailPerfil", document.getElementById("emailPerfil")?.value || "");
   setValue("cnpj", document.getElementById("cnpj")?.value || "");
   setValue("privacidade", document.getElementById("privacidade")?.value || "");
   setValue("termos", document.getElementById("termos")?.value || "");
@@ -354,7 +377,60 @@ function populateReview() {
   setValue("responsavel", `${responsavel}${cargo ? ` (${cargo})` : ""}`.trim());
   setValue("email", document.getElementById("email")?.value || "");
   setValue("segmento", document.getElementById("segmento")?.value || "");
+  if (isNexusBrand) setValue("atendimento", document.getElementById("atendimento")?.value || "");
 }
+
+const PREVIEW_PLACEHOLDERS = {
+  nome: "Nome do agente",
+  desc: "Descrição do agente",
+  telefone: "+5511999999999",
+  email: "contato@suaempresa.com.br",
+  website: "www.suaempresa.com.br",
+};
+
+function setPreviewText(id, value, placeholder) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = value || placeholder;
+  el.classList.toggle("pv-empty", !value);
+}
+
+function setPreviewImage(el, src) {
+  if (!el) return;
+  el.style.backgroundImage = src ? `url("${src}")` : "";
+}
+
+// Preview do perfil do agente: espelha ao vivo o que o cliente digita na etapa 1
+// e os arquivos da etapa 2. Sem logo, cai na inicial do nome de exibição.
+function updatePreview() {
+  const nome = document.getElementById("nome")?.value.trim() || "";
+  const descricao = document.getElementById("descricao")?.value.trim() || "";
+  const website = document.getElementById("website")?.value.trim() || "";
+  const telefone = document.getElementById("telefonePerfil")?.value.trim() || "";
+  const email = document.getElementById("emailPerfil")?.value.trim() || "";
+
+  setPreviewText("pv-header-nome", nome, PREVIEW_PLACEHOLDERS.nome);
+  setPreviewText("pv-nome", nome, PREVIEW_PLACEHOLDERS.nome);
+  setPreviewText("pv-desc", descricao, PREVIEW_PLACEHOLDERS.desc);
+  setPreviewText("pv-telefone", telefone, PREVIEW_PLACEHOLDERS.telefone);
+  setPreviewText("pv-email", email, PREVIEW_PLACEHOLDERS.email);
+  setPreviewText("pv-website", website.replace(/^https?:\/\//i, ""), PREVIEW_PLACEHOLDERS.website);
+
+  const logoSrc = files.logo ? document.getElementById("logo-preview")?.src || "" : "";
+  const bannerSrc = files.banner ? document.getElementById("banner-preview")?.src || "" : "";
+  const initial = nome ? nome[0].toUpperCase() : "?";
+
+  ["pv-avatar-header", "pv-avatar-card", "pv-avatar-msg"].forEach((id) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    setPreviewImage(el, logoSrc);
+    el.textContent = logoSrc ? "" : initial;
+  });
+
+  setPreviewImage(document.getElementById("pv-banner"), bannerSrc);
+}
+
+updatePreview();
 
 const CONFIG = {
   API_URL: "/api/novo-agente",
@@ -376,6 +452,8 @@ async function submitForm() {
     nome: document.getElementById("nome")?.value.trim() || "",
     descricao: document.getElementById("descricao")?.value.trim() || "",
     website: document.getElementById("website")?.value.trim() || "",
+    telefonePerfil: document.getElementById("telefonePerfil")?.value.trim() || "",
+    emailPerfil: document.getElementById("emailPerfil")?.value.trim() || "",
     cnpj: document.getElementById("cnpj")?.value.trim() || "",
     privacidade: document.getElementById("privacidade")?.value.trim() || "",
     termos: document.getElementById("termos")?.value.trim() || "",
@@ -384,6 +462,7 @@ async function submitForm() {
     cargo: document.getElementById("cargo")?.value.trim() || "",
     email: document.getElementById("email")?.value.trim() || "",
     segmento: document.getElementById("segmento")?.value || "",
+    atendimento: isNexusBrand ? document.getElementById("atendimento")?.value || "" : "",
     adicional: document.getElementById("adicional")?.value.trim() || "",
   };
 
