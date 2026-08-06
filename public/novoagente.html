@@ -6,7 +6,7 @@
 <title>Abertura de Agente RCS - NEXUS Comunicacao</title>
 <link rel="icon" type="image/x-icon" href="./assets/nexus-comunicacao.ico">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="./novoagente.css?v=7">
+<link rel="stylesheet" href="./novoagente.css?v=8">
 </head>
 <body>
 
@@ -26,6 +26,10 @@
   </div>
 
   
+  <div class="layout">
+
+  <div class="form-col">
+
   <div class="progress-wrap">
     <div class="progress-steps">
       <div class="step-dot active" id="dot-1">
@@ -80,6 +84,20 @@
         <label>Website da empresa <span class="required">*</span></label>
         <input type="url" id="website" placeholder="https://www.suaempresa.com.br">
         <div class="field-error">Por favor, informe o website da empresa.</div>
+      </div>
+
+      <div class="field" id="field-telefonePerfil">
+        <label>Telefone do perfil <span class="required">*</span></label>
+        <input type="tel" id="telefonePerfil" inputmode="numeric" autocomplete="tel" placeholder="+5511999999999">
+        <div class="field-hint">Formato internacional E.164: começa com <strong>+</strong>, código do país e número completo sem espaços. Ex: <strong>+5511999999999</strong></div>
+        <div class="field-error">Por favor, informe o telefone no formato correto (ex: +5511999999999).</div>
+      </div>
+
+      <div class="field" id="field-emailPerfil">
+        <label>E-mail do perfil <span class="required">*</span></label>
+        <input type="email" id="emailPerfil" placeholder="contato@suaempresa.com.br">
+        <div class="field-hint">O e-mail deve ser do <strong>domínio da marca</strong>.</div>
+        <div class="field-error">Por favor, informe um e-mail válido.</div>
       </div>
 
       <div class="info-banner">
@@ -192,6 +210,7 @@
       <div class="field" id="field-email">
         <label>E-mail <span class="required">*</span></label>
         <input type="email" id="email" placeholder="contato@suaempresa.com.br">
+        <div class="field-hint">O e-mail deve ser do <strong>domínio da marca</strong>.</div>
         <div class="field-error">Por favor, informe um e-mail válido.</div>
       </div>
 
@@ -208,6 +227,19 @@
           <option>Telecomunicações</option>
           <option>Serviços</option>
           <option>Outro</option>
+        </select>
+        <div class="field-error">Campo obrigatório.</div>
+      </div>
+
+      <div class="field" id="field-atendimento">
+        <label>Responsável pelo atendimento <span class="required">*</span></label>
+        <select id="atendimento">
+          <option value="" disabled selected>Selecione...</option>
+          <option>Marcelo Lozano</option>
+          <option>Marcelo Almada</option>
+          <option>Sonia Rodrigues</option>
+          <option>Gustavo Bueno</option>
+          <option>Katia Takase</option>
         </select>
         <div class="field-error">Campo obrigatório.</div>
       </div>
@@ -242,6 +274,14 @@
         <div class="review-row">
           <span class="review-label">Website</span>
           <span class="review-value" id="rv-website">—</span>
+        </div>
+        <div class="review-row">
+          <span class="review-label">Telefone do perfil</span>
+          <span class="review-value" id="rv-telefonePerfil">—</span>
+        </div>
+        <div class="review-row">
+          <span class="review-label">E-mail do perfil</span>
+          <span class="review-value" id="rv-emailPerfil">—</span>
         </div>
         <div class="review-row">
           <span class="review-label">CNPJ</span>
@@ -293,6 +333,10 @@
           <span class="review-label">Segmento</span>
           <span class="review-value" id="rv-segmento">—</span>
         </div>
+        <div class="review-row" id="rv-row-atendimento">
+          <span class="review-label">Responsável pelo atendimento</span>
+          <span class="review-value" id="rv-atendimento">—</span>
+        </div>
       </div>
 
       <div class="timeline">
@@ -315,7 +359,7 @@
           <div class="tl-num">3</div>
           <div class="tl-content">
             <strong>Agente aprovado e ativo</strong>
-            <span>Prazo total de até 15 dias. Você recebe o acesso e já pode disparar pela plataforma <span id="brand-platform-name">NEXUS</span>.</span>
+            <span>Prazo total de até 20 dias úteis. Você recebe o acesso e já pode disparar pela plataforma <span id="brand-platform-name">NEXUS</span>.</span>
           </div>
         </div>
       </div>
@@ -340,19 +384,71 @@
         <p>Nossa equipe revisa os dados, submete ao Google e acompanha cada etapa da aprovação. Você será notificado por e-mail.</p>
         <div class="timeline-pills">
           <span class="timeline-pill">Revisão interna: 1 dia útil</span>
-          <span class="timeline-pill">Aprovação Google: até 15 dias</span>
+          <span class="timeline-pill">Aprovação Google: até 20 dias úteis</span>
         </div>
       </div>
     </div>
 
   </div>
 
-  
+  </div>
+
+
+  <aside class="preview-pane">
+    <div class="preview-title">Pré-visualização</div>
+    <div class="phone">
+      <div class="phone-screen">
+
+        <div class="pv-chat-header">
+          <div class="pv-avatar" id="pv-avatar-header"></div>
+          <div class="pv-chat-id">
+            <strong id="pv-header-nome">Nome do agente</strong>
+            <span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Verificado
+            </span>
+          </div>
+        </div>
+
+        <div class="pv-banner" id="pv-banner"></div>
+
+        <div class="pv-card">
+          <div class="pv-avatar pv-avatar--lg" id="pv-avatar-card"></div>
+          <div class="pv-nome" id="pv-nome">Nome do agente</div>
+          <div class="pv-desc" id="pv-desc">Descrição do agente</div>
+          <div class="pv-rows">
+            <div class="pv-row">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              <span id="pv-telefone">+5511999999999</span>
+            </div>
+            <div class="pv-row">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2 6 12 13 22 6"/></svg>
+              <span id="pv-email">contato@suaempresa.com.br</span>
+            </div>
+            <div class="pv-row">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 0 20a15.3 15.3 0 0 1 0-20z"/></svg>
+              <span id="pv-website">www.suaempresa.com.br</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pv-msg">
+          <div class="pv-avatar pv-avatar--sm" id="pv-avatar-msg"></div>
+          <div class="pv-bubble">Olá! Esta é uma mensagem de exemplo do seu agente.</div>
+        </div>
+
+      </div>
+    </div>
+  </aside>
+
+  </div>
+
+
   <div class="footer">
     <p>Dúvidas? Fale com a <span id="brand-support-name">NEXUS</span>: <a id="brand-support-link" href="mailto:contato@nexuscomunicacao.com.br">contato@nexuscomunicacao.com.br</a></p>
   </div>
 
 </div>
-<script src="./novoagente.js?v=8" defer></script>
+<script src="./novoagente.js?v=9" defer></script>
 </body>
 </html>

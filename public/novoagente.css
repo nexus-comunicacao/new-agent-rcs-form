@@ -58,14 +58,31 @@
     .wrapper {
     position: relative;
     z-index: 1;
-    max-width: 680px;
+    max-width: 1064px;
     margin: 0 auto;
     padding: 60px 24px 80px;
   }
 
+  .layout {
+    display: grid;
+    gap: 24px;
+    align-items: start;
+  }
+
+  .form-col { min-width: 0; }
+
+  @media (min-width: 1024px) {
+    .layout { grid-template-columns: minmax(0, 1fr) 320px; }
+  }
+
+  @media (max-width: 1023px) {
+    .layout { max-width: 680px; margin: 0 auto; }
+  }
+
     .header {
     text-align: center;
-    margin-bottom: 56px;
+    max-width: 680px;
+    margin: 0 auto 56px;
     animation: fadeUp 0.8s ease both;
   }
 
@@ -813,9 +830,179 @@
     font-weight: 500;
   }
 
+    .preview-pane {
+    animation: fadeUp 0.8s 0.3s ease both;
+  }
+
+  @media (min-width: 1024px) {
+    .preview-pane { position: sticky; top: 24px; }
+  }
+
+  .preview-title {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    text-align: center;
+    margin-bottom: 12px;
+  }
+
+  .phone {
+    max-width: 320px;
+    margin: 0 auto;
+    padding: 8px;
+    background: linear-gradient(160deg, rgba(255,255,255,0.12), rgba(255,255,255,0.02));
+    border: 1px solid var(--border);
+    border-radius: 28px;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.45);
+  }
+
+  .phone-screen {
+    background: #0B1424;
+    border-radius: 22px;
+    overflow: hidden;
+  }
+
+  .pv-chat-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    background: rgba(255,255,255,0.03);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .pv-avatar {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background-color: color-mix(in oklab, var(--accent) 20%, transparent);
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    overflow: hidden;
+  }
+
+  .pv-avatar--lg {
+    width: 56px;
+    height: 56px;
+    font-size: 20px;
+    border: 2px solid #0B1424;
+    margin: -28px auto 8px;
+  }
+
+  .pv-avatar--sm { width: 22px; height: 22px; font-size: 10px; }
+
+  .pv-chat-id { min-width: 0; }
+
+  .pv-chat-id strong {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--white);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .pv-chat-id span {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 10px;
+    color: var(--success);
+  }
+
+  .pv-chat-id svg { width: 9px; height: 9px; }
+
+  .pv-banner {
+    height: 90px;
+    background-color: rgba(255,255,255,0.05);
+    background-size: cover;
+    background-position: center;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .pv-card { padding: 0 14px 14px; text-align: center; }
+
+  .pv-nome {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--white);
+    word-break: break-word;
+  }
+
+  .pv-desc {
+    font-size: 11px;
+    line-height: 1.5;
+    color: var(--gray);
+    margin-top: 4px;
+    word-break: break-word;
+  }
+
+  .pv-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    margin-top: 14px;
+    text-align: left;
+  }
+
+  .pv-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    color: var(--gray);
+  }
+
+  .pv-row svg { width: 13px; height: 13px; flex-shrink: 0; color: var(--accent); }
+
+  .pv-row span {
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .pv-msg {
+    display: flex;
+    align-items: flex-end;
+    gap: 7px;
+    padding: 12px 14px 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .pv-bubble {
+    background: rgba(255,255,255,0.07);
+    border-radius: 14px 14px 14px 4px;
+    padding: 8px 11px;
+    font-size: 11.5px;
+    line-height: 1.5;
+    color: rgba(255,255,255,0.8);
+  }
+
+  .pv-nome.pv-empty,
+  .pv-desc.pv-empty,
+  .pv-chat-id strong.pv-empty,
+  .pv-row span.pv-empty {
+    color: rgba(138,155,190,0.45);
+    font-style: italic;
+    font-weight: 400;
+  }
+
     .footer {
     text-align: center;
-    margin-top: 40px;
+    max-width: 680px;
+    margin: 40px auto 0;
     animation: fadeUp 0.8s 0.4s ease both;
   }
 
