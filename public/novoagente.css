@@ -848,155 +848,155 @@
     margin-bottom: 12px;
   }
 
+  /* Mockup da tela "Info e opções" do agente no Google Mensagens: fundo claro,
+     independente do tema escuro da página — é assim que o usuário final vê. */
   .phone {
+    --pv-ink: #202124;
+    --pv-muted: #5F6368;
+    --pv-line: #E3E3E5;
     max-width: 320px;
     margin: 0 auto;
-    padding: 8px;
-    background: linear-gradient(160deg, rgba(255,255,255,0.12), rgba(255,255,255,0.02));
-    border: 1px solid var(--border);
-    border-radius: 28px;
+    padding: 9px;
+    background: #D6D8DC;
+    border-radius: 30px;
     box-shadow: 0 24px 60px rgba(0,0,0,0.45);
   }
 
   .phone-screen {
-    background: #0B1424;
+    background: #FFFFFF;
     border-radius: 22px;
     overflow: hidden;
+    padding-bottom: 6px;
   }
 
-  .pv-chat-header {
+  .pv-topbar {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 12px 14px;
-    background: rgba(255,255,255,0.03);
-    border-bottom: 1px solid var(--border);
+    justify-content: center;
+    gap: 6px;
+    padding: 13px 14px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--pv-ink);
+  }
+
+  .pv-topbar svg { width: 15px; height: 15px; }
+
+  .pv-banner {
+    aspect-ratio: 1440 / 448;
+    background-color: #ECEDEF;
+    background-size: cover;
+    background-position: center;
   }
 
   .pv-avatar {
-    width: 32px;
-    height: 32px;
-    flex-shrink: 0;
+    width: 86px;
+    height: 86px;
+    margin: -43px auto 0;
+    position: relative;
     border-radius: 50%;
-    background-color: color-mix(in oklab, var(--accent) 20%, transparent);
+    border: 4px solid #FFFFFF;
+    background-color: #F1F3F4;
     background-size: cover;
     background-position: center;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 13px;
+    font-size: 30px;
     font-weight: 700;
     color: var(--accent);
     overflow: hidden;
   }
 
-  .pv-avatar--lg {
-    width: 56px;
-    height: 56px;
-    font-size: 20px;
-    border: 2px solid #0B1424;
-    margin: -28px auto 8px;
-  }
-
-  .pv-avatar--sm { width: 22px; height: 22px; font-size: 10px; }
-
-  .pv-chat-id { min-width: 0; }
-
-  .pv-chat-id strong {
-    display: block;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--white);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .pv-chat-id span {
-    display: flex;
-    align-items: center;
-    gap: 3px;
-    font-size: 10px;
-    color: var(--success);
-  }
-
-  .pv-chat-id svg { width: 9px; height: 9px; }
-
-  .pv-banner {
-    height: 90px;
-    background-color: rgba(255,255,255,0.05);
-    background-size: cover;
-    background-position: center;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .pv-card { padding: 0 14px 14px; text-align: center; }
-
   .pv-nome {
-    font-size: 14px;
-    font-weight: 600;
+    margin-top: 12px;
+    padding: 0 18px;
+    text-align: center;
+    font-size: 17px;
+    font-weight: 400;
     line-height: 1.3;
-    color: var(--white);
+    color: var(--pv-ink);
     word-break: break-word;
   }
 
   .pv-desc {
-    font-size: 11px;
-    line-height: 1.5;
-    color: var(--gray);
     margin-top: 4px;
+    padding: 0 22px;
+    text-align: center;
+    font-size: 13px;
+    line-height: 1.4;
+    color: var(--pv-muted);
     word-break: break-word;
   }
 
-  .pv-rows {
+  .pv-actions {
+    display: flex;
+    justify-content: space-around;
+    padding: 18px 14px 14px;
+  }
+
+  .pv-action {
     display: flex;
     flex-direction: column;
-    gap: 7px;
-    margin-top: 14px;
-    text-align: left;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--pv-ink);
   }
+
+  .pv-action svg { width: 20px; height: 20px; color: var(--accent); }
+
+  .pv-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--pv-line);
+  }
+
+  .pv-tab {
+    flex: 1;
+    text-align: center;
+    padding: 10px 0;
+    font-size: 13px;
+    color: var(--pv-muted);
+  }
+
+  .pv-tab--active {
+    color: var(--pv-ink);
+    font-weight: 500;
+    box-shadow: inset 0 -3px 0 var(--pv-ink);
+  }
+
+  .pv-rows { padding: 4px 16px; }
 
   .pv-row {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 11px;
-    color: var(--gray);
+    gap: 14px;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--pv-line);
   }
 
-  .pv-row svg { width: 13px; height: 13px; flex-shrink: 0; color: var(--accent); }
+  .pv-row:last-child { border-bottom: none; }
 
-  .pv-row span {
-    min-width: 0;
+  .pv-row > svg { width: 17px; height: 17px; flex-shrink: 0; color: var(--pv-muted); }
+
+  .pv-row-text { min-width: 0; }
+
+  .pv-row-text span,
+  .pv-row-text small {
+    display: block;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
-  .pv-msg {
-    display: flex;
-    align-items: flex-end;
-    gap: 7px;
-    padding: 12px 14px 16px;
-    border-top: 1px solid var(--border);
-  }
-
-  .pv-bubble {
-    background: rgba(255,255,255,0.07);
-    border-radius: 14px 14px 14px 4px;
-    padding: 8px 11px;
-    font-size: 11.5px;
-    line-height: 1.5;
-    color: rgba(255,255,255,0.8);
-  }
+  .pv-row-text span { font-size: 12.5px; color: var(--pv-ink); }
+  .pv-row-text small { font-size: 11px; color: var(--pv-muted); margin-top: 1px; }
 
   .pv-nome.pv-empty,
   .pv-desc.pv-empty,
-  .pv-chat-id strong.pv-empty,
-  .pv-row span.pv-empty {
-    color: rgba(138,155,190,0.45);
+  .pv-row-text span.pv-empty {
+    color: #9AA0A6;
     font-style: italic;
-    font-weight: 400;
   }
 
     .footer {
