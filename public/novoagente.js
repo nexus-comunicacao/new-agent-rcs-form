@@ -385,7 +385,7 @@ const PREVIEW_PLACEHOLDERS = {
   desc: "Descrição do agente",
   telefone: "+5511999999999",
   email: "contato@suaempresa.com.br",
-  website: "www.suaempresa.com.br",
+  website: "https://www.suaempresa.com.br",
 };
 
 function setPreviewText(id, value, placeholder) {
@@ -409,23 +409,19 @@ function updatePreview() {
   const telefone = document.getElementById("telefonePerfil")?.value.trim() || "";
   const email = document.getElementById("emailPerfil")?.value.trim() || "";
 
-  setPreviewText("pv-header-nome", nome, PREVIEW_PLACEHOLDERS.nome);
   setPreviewText("pv-nome", nome, PREVIEW_PLACEHOLDERS.nome);
   setPreviewText("pv-desc", descricao, PREVIEW_PLACEHOLDERS.desc);
   setPreviewText("pv-telefone", telefone, PREVIEW_PLACEHOLDERS.telefone);
   setPreviewText("pv-email", email, PREVIEW_PLACEHOLDERS.email);
-  setPreviewText("pv-website", website.replace(/^https?:\/\//i, ""), PREVIEW_PLACEHOLDERS.website);
+  setPreviewText("pv-website", website, PREVIEW_PLACEHOLDERS.website);
 
   const logoSrc = files.logo ? document.getElementById("logo-preview")?.src || "" : "";
   const bannerSrc = files.banner ? document.getElementById("banner-preview")?.src || "" : "";
-  const initial = nome ? nome[0].toUpperCase() : "?";
-
-  ["pv-avatar-header", "pv-avatar-card", "pv-avatar-msg"].forEach((id) => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    setPreviewImage(el, logoSrc);
-    el.textContent = logoSrc ? "" : initial;
-  });
+  const avatar = document.getElementById("pv-avatar");
+  if (avatar) {
+    setPreviewImage(avatar, logoSrc);
+    avatar.textContent = logoSrc ? "" : nome ? nome[0].toUpperCase() : "";
+  }
 
   setPreviewImage(document.getElementById("pv-banner"), bannerSrc);
 }
